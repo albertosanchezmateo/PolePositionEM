@@ -6,9 +6,10 @@ using UnityEngine;
 public class MyNetworkManager : NetworkManager
 {
 
+
     #region Client
         public override void OnClientConnect(NetworkConnection conn){
-           base.OnClientConnect(conn);
+           //base.OnClientConnect(conn);
 
             Debug.Log("Cliente conectado");
         }

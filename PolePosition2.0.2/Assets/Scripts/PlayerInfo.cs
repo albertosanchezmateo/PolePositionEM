@@ -16,8 +16,11 @@ public class PlayerInfo : MonoBehaviour
     private Vector3[] posicionesChecks = new Vector3[4];
     private Vector3[] posicionesLookAt = new Vector3[4];
 
-    [SerializeField] public bool sentidoContrario = false;
+   
     [SerializeField]private int vueltas = 0;
+
+
+    [SerializeField] public bool sentidoContrario = false;
     [SerializeField]private int numCheckRetrocesoSig; //Es la distancia con el checkPoint siguiente sin tener encuenta el numCheckPoint Actual
     [SerializeField]private float distanciaRetroceso;
 
@@ -61,11 +64,12 @@ public class PlayerInfo : MonoBehaviour
             numCheckRetrocesoSig = 2;
             distanciaRetroceso = 10000000;
             if(numCheckPoint !=4){
-                sentidoContrario = true;
             }else{
                 numCheckPoint = 1;
-                sentidoContrario = false;
-                vueltas++;
+                if(!sentidoContraio){
+                    vueltas++;
+                }
+                
             }   
         }
 
@@ -74,10 +78,10 @@ public class PlayerInfo : MonoBehaviour
             numCheckRetrocesoSig = 3;
             distanciaRetroceso = 10000000;
             if(numCheckPoint !=1){
-                sentidoContrario = true;
+          
             }else{
                 numCheckPoint = 2;
-                sentidoContrario = false;
+ 
             }  
             
         }
@@ -87,10 +91,9 @@ public class PlayerInfo : MonoBehaviour
             numCheckRetrocesoSig = 4;
             distanciaRetroceso = 10000000;
             if(numCheckPoint !=2){
-                sentidoContrario = true;
+           
             }else{
                 numCheckPoint = 3;
-                sentidoContrario = false;
             }  
         }
 
@@ -99,10 +102,10 @@ public class PlayerInfo : MonoBehaviour
             numCheckRetrocesoSig = 1;
             distanciaRetroceso = 10000000;
             if(numCheckPoint !=3){
-                sentidoContrario = true;
+              
             }else{
                 numCheckPoint = 4;
-                sentidoContrario = false;
+               
             }  
         }
 
