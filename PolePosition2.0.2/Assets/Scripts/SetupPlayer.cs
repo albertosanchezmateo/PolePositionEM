@@ -21,6 +21,8 @@ public class SetupPlayer : NetworkBehaviour
     private PolePositionManager _polePositionManager;
 
     private GameObject[] listaJugadores;
+    [SyncVar] public bool _ready;
+    private bool checkReady = true;
 
     #region Start & Stop Callbacks
 
@@ -79,9 +81,30 @@ public class SetupPlayer : NetworkBehaviour
 
         if (isLocalPlayer)
         {
-            _playerController.enabled = true;
-            _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
+            //_playerController.enabled = true;
+            //_playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
             ConfigureCamera();
+        }
+    }
+
+    private void Update()
+    {
+        if (isServer)
+        {
+            checkReady = true;
+            foreach (GameObject player in listaJugadores)
+            {
+                if (!player.GetComponent<SetupPlayer>()._ready)
+                {
+                    checkReady = false;
+                }
+
+                if (checkReady)
+                {
+                    _playerController.enabled = true;
+                    _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
+                }
+            }
         }
     }
 
@@ -94,8 +117,6 @@ public class SetupPlayer : NetworkBehaviour
     {
         if (Camera.main != null) Camera.main.gameObject.GetComponent<CameraController>().m_Focus = this.gameObject;
     }
-
-
 
 
     #region Name
@@ -135,7 +156,7 @@ public class SetupPlayer : NetworkBehaviour
     }
     #endregion
 
-    #region color
+    #region Color
     [Server]
     public void setColor(Color newColor){
         _colorCoche = newColor;
@@ -149,10 +170,27 @@ public class SetupPlayer : NetworkBehaviour
     public void CmdSetColor(Color newColor){
         setColor(newColor);
     }
-
-
-
     #endregion
+
+    #region Ready
+    [Server]
+    public void setReady(bool newState)
+    {
+        _ready = newState;
+    }
+
+    private void HandleReady(bool oldState, bool newState)
+    {
+
+    }
+
+    [Command]
+    public void CmdSetReady(bool newState)
+    {
+        setReady(newState);
+    }
+    #endregion
+
 
 
 

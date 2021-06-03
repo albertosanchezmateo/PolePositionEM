@@ -36,6 +36,10 @@ public class UIManager : MonoBehaviour
     public bool [] buttonActivado = new bool [4];
 
 
+    [Header("Cancelar preparación")]
+    [SerializeField] private GameObject menuCancelar;
+    [SerializeField] private Button buttonCancelarReady;
+
     private void Awake()
     {
         m_NetworkManager = FindObjectOfType<MyNetworkManager>();
@@ -51,6 +55,7 @@ public class UIManager : MonoBehaviour
         buttoncolor2.onClick.AddListener(() => cambiarColor(2));
         buttoncolor3.onClick.AddListener(() => cambiarColor(3));
         buttoncolor4.onClick.AddListener(() => cambiarColor(4));
+        buttonCancelarReady.onClick.AddListener(() => cancelarReady());
         ActivateMainMenu();
 
         for(int i =0; i<buttonActivado.Length;i++){
@@ -67,6 +72,7 @@ public class UIManager : MonoBehaviour
     {
         mainMenu.SetActive(true);
         inGameHUD.SetActive(false);
+        menuCancelar.SetActive(false);
         menuSeleccionNombre.SetActive(false);
     }
 
@@ -74,6 +80,7 @@ public class UIManager : MonoBehaviour
     {
         mainMenu.SetActive(false);
         inGameHUD.SetActive(true);
+        menuCancelar.SetActive(false);
         menuSeleccionNombre.SetActive(false);
     }
 
@@ -81,10 +88,19 @@ public class UIManager : MonoBehaviour
     {
         mainMenu.SetActive(false);
         inGameHUD.SetActive(false);
+        menuCancelar.SetActive(false);
         menuSeleccionNombre.SetActive(true);
     }
 
-  
+    private void ActivateCancelar()
+    {
+        mainMenu.SetActive(false);
+        inGameHUD.SetActive(false);
+        menuCancelar.SetActive(true);
+        menuSeleccionNombre.SetActive(false);
+    }
+
+
     private void StartHost()
     {
         m_NetworkManager.StartHost();
@@ -110,6 +126,8 @@ public class UIManager : MonoBehaviour
             foreach(SetupPlayer player in players){
                 if(player.hasAuthority){
                     player.CmdSetName(inputFieldNombreJugador.text);
+                    entrarReady();
+                    ActivateCancelar();
                 }
             }
         }
@@ -141,5 +159,33 @@ public class UIManager : MonoBehaviour
             }
         }
       
+    }
+
+    private void cancelarReady()
+    {
+        SetupPlayer[] players = (SetupPlayer[])GameObject.FindObjectsOfType(typeof(SetupPlayer));
+        foreach (SetupPlayer player in players)
+        {
+            if (player.hasAuthority)
+            {
+                player.CmdSetReady(false);
+
+            }
+        }
+
+        ActivateSeleccionNombre();
+    }
+
+    private void entrarReady()
+    {
+        SetupPlayer[] players = (SetupPlayer[])GameObject.FindObjectsOfType(typeof(SetupPlayer));
+        foreach (SetupPlayer player in players)
+        {
+            if (player.hasAuthority)
+            {
+                player.CmdSetReady(true);
+
+            }
+        }
     }
 }
