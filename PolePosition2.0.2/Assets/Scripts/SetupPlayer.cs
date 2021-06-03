@@ -20,6 +20,8 @@ public class SetupPlayer : NetworkBehaviour
     private PlayerInfo _playerInfo;
     private PolePositionManager _polePositionManager;
 
+    private GameObject[] listaJugadores;
+
     #region Start & Stop Callbacks
 
     /// <summary>
@@ -68,6 +70,13 @@ public class SetupPlayer : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        if (isServer)
+        {
+            listaJugadores = GameObject.FindGameObjectsWithTag("Player");
+            Debug.Log(listaJugadores.Length);
+        }
+
         if (isLocalPlayer)
         {
             _playerController.enabled = true;

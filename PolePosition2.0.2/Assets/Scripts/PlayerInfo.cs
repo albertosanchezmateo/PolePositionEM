@@ -66,7 +66,7 @@ public class PlayerInfo : MonoBehaviour
             if(numCheckPoint !=4){
             }else{
                 numCheckPoint = 1;
-                if(!sentidoContraio){
+                if(!sentidoContrario){
                     vueltas++;
                 }
                 
@@ -132,8 +132,6 @@ public class PlayerInfo : MonoBehaviour
             chocado = false;
         }
         
-        Debug.Log("Rotation X:"+ Mathf.Abs(this.GetComponent<Transform>().localEulerAngles.x)) ;
-        Debug.Log("Rotation Z:" + Mathf.Abs(this.GetComponent<Transform>().localEulerAngles.z));
     }
     public string Name { get; set; }
 

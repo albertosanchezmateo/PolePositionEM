@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class MyNetworkManager : NetworkManager
 {
+    public List<SetupPlayer> listaInfoJugadores;
 
 
     #region Client
         public override void OnClientConnect(NetworkConnection conn){
-           //base.OnClientConnect(conn);
+           base.OnClientConnect(conn);
 
             Debug.Log("Cliente conectado");
         }
@@ -25,7 +26,12 @@ public class MyNetworkManager : NetworkManager
         public override void OnServerConnect(NetworkConnection conn){
             Debug.Log("Nueva connección okay");
         }
-
+        
+        [Server]
+        private void AddPlayerToList(SetupPlayer info)
+        {
+        listaInfoJugadores.Add(info);
+        }
 
     #endregion
 
