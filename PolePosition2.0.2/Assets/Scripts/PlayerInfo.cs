@@ -46,6 +46,7 @@ public class PlayerInfo : MonoBehaviour
 
 
         numCheckPoint = 4;
+        numCheckRetrocesoSig = 2;
         chocado = false;
     }
 
@@ -109,7 +110,7 @@ public class PlayerInfo : MonoBehaviour
             }  
         }
 
-
+        Debug.Log("[NumCheckRetrocesoSig]: " + (numCheckRetrocesoSig));
         if(distanciaRetroceso>Vector3.Distance(posicionesChecks[numCheckRetrocesoSig-1], jugador)){
             sentidoContrario = false;
         }else{
