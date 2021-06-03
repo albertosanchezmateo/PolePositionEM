@@ -18,6 +18,10 @@ public class PlayerInfo : MonoBehaviour
 
     [SerializeField] public bool sentidoContrario = false;
     [SerializeField]private int vueltas = 0;
+    [SerializeField]private int numCheckRetrocesoSig; //Es la distancia con el checkPoint siguiente sin tener encuenta el numCheckPoint Actual
+    [SerializeField]private float distanciaRetroceso;
+
+
     private void Awake()
     {
         check1 = GameObject.Find("CheckPoint1");
@@ -54,6 +58,8 @@ public class PlayerInfo : MonoBehaviour
         float distancia4 = Vector3.Distance(posicionesChecks[3], jugador);
         
         if (distancia1 <= 10){
+            numCheckRetrocesoSig = 2;
+            distanciaRetroceso = 10000000;
             if(numCheckPoint !=4){
                 sentidoContrario = true;
             }else{
@@ -65,6 +71,8 @@ public class PlayerInfo : MonoBehaviour
 
         if (distancia2 <= 10)
         {
+            numCheckRetrocesoSig = 3;
+            distanciaRetroceso = 10000000;
             if(numCheckPoint !=1){
                 sentidoContrario = true;
             }else{
@@ -76,6 +84,8 @@ public class PlayerInfo : MonoBehaviour
 
         if (distancia3 <= 10)
         {
+            numCheckRetrocesoSig = 4;
+            distanciaRetroceso = 10000000;
             if(numCheckPoint !=2){
                 sentidoContrario = true;
             }else{
@@ -86,13 +96,24 @@ public class PlayerInfo : MonoBehaviour
 
         if (distancia4 <= 10)
         {
+            numCheckRetrocesoSig = 1;
+            distanciaRetroceso = 10000000;
             if(numCheckPoint !=3){
                 sentidoContrario = true;
             }else{
                 numCheckPoint = 4;
                 sentidoContrario = false;
             }  
-        } 
+        }
+
+
+        if(distanciaRetroceso>Vector3.Distance(posicionesChecks[numCheckRetrocesoSig-1], jugador)){
+            sentidoContrario = false;
+        }else{
+            sentidoContrario = true;
+        }
+
+        distanciaRetroceso = Vector3.Distance(posicionesChecks[numCheckRetrocesoSig-1], jugador);
         
        
 
