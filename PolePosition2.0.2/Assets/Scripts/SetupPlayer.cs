@@ -24,6 +24,8 @@ public class SetupPlayer : NetworkBehaviour
     [SyncVar] public bool _ready;
     private bool checkReady = true;
 
+    private int maxVueltas = 2;
+
     #region Start & Stop Callbacks
 
     /// <summary>
@@ -105,6 +107,17 @@ public class SetupPlayer : NetworkBehaviour
                     _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
                 }
             }
+        }
+
+        if (_playerInfo.vueltas == maxVueltas)
+        {
+            
+            _playerController.enabled = false;
+            _playerController.Speed = 0;
+            _playerController.CurrentRotation = 0;
+            _playerController.InputAcceleration = 0;
+            _playerController.InputSteering = 0;
+            _playerController.InputBrake = 0;
         }
     }
 

@@ -65,9 +65,35 @@ public class PolePositionManager : NetworkBehaviour
         for (int i = 0; i < _players.Count; ++i)
         {
             arcLengths[i] = ComputeCarArcLength(i);
+            _players[i].distanciaArco = arcLengths[i];
+            Debug.Log("[ORDEN CARRERA] Player " + i + ": " + arcLengths[i]);
         }
-        
-        _players.Sort(new PlayerInfoComparer(arcLengths));
+
+        int size = _players.Count;
+        PlayerInfo[] playerInfos = new PlayerInfo[size];
+
+
+
+        for (int i = 0; i < size; i++)
+        {
+            playerInfos[i] = _players[i];
+        }
+
+        //Reordenacion de los players segun su posicion en la carrera
+        Array.Sort(playerInfos, delegate (PlayerInfo x, PlayerInfo y) { return x.distanciaArco.CompareTo(y.distanciaArco); });
+
+
+
+        for (int i = 0; i < _players.Count; ++i)
+        {
+            _players[i] = playerInfos[i];
+        }
+
+
+
+        _players.Reverse();
+
+        // _players.Sort(new PlayerInfoComparer(arcLengths));
 
         string myRaceOrder = "";
         foreach (var player in _players)
@@ -80,30 +106,40 @@ public class PolePositionManager : NetworkBehaviour
 
     float ComputeCarArcLength(int id)
     {
-        // Compute the projection of the car position to the closest circuit 
-        // path segment and accumulate the arc-length along of the car along
-        // the circuit.
-        Vector3 carPos = this._players[id].transform.position;
+        if (_players[id] != null) {
+            // Compute the projection of the car position to the closest circuit 
+            // path segment and accumulate the arc-length along of the car along
+            // the circuit.
+            Vector3 carPos = this._players[id].transform.position;
 
-        int segIdx;
-        float carDist;
-        Vector3 carProj;
+            int segIdx;
+            float carDist;
+            Vector3 carProj;
 
-        float minArcL =
-            this._circuitController.ComputeClosestPointArcLength(carPos, out segIdx, out carProj, out carDist);
+            float minArcL =
+                this._circuitController.ComputeClosestPointArcLength(carPos, out segIdx, out carProj, out carDist);
 
-        this._debuggingSpheres[id].transform.position = carProj;
+            this._debuggingSpheres[id].transform.position = carProj;
 
-        if (this._players[id].CurrentLap == 0)
-        {
-            minArcL -= _circuitController.CircuitLength;
+            if (this._players[id].CurrentLap == 0)
+            {
+                minArcL -= _circuitController.CircuitLength;
+            }
+            else
+            {
+                minArcL += _circuitController.CircuitLength *
+                           (_players[id].CurrentLap - 1);
+            }
+
+            // _players[id].setDistancia(minArcL);
+
+            minArcL += _players[id].vueltas * 10000;
+
+            Debug.Log("[COMPUTE] Player " + id + " (minArcL): " + minArcL);
+
+            return minArcL;
         }
-        else
-        {
-            minArcL += _circuitController.CircuitLength *
-                       (_players[id].CurrentLap - 1);
-        }
 
-        return minArcL;
+        return 0;
     }
 }

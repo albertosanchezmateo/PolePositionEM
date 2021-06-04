@@ -22,10 +22,16 @@ public class PlayerController : NetworkBehaviour
     public float downForce = 100f;
     public float slipLimit = 0.2f;
 
-    private float CurrentRotation { get; set; }
-    private float InputAcceleration { get; set; }
-    private float InputSteering { get; set; }
-    private float InputBrake { get; set; }
+    // private float CurrentRotation { get; set; }
+    // private float InputAcceleration { get; set; }
+    // private float InputSteering { get; set; }
+    // private float InputBrake { get; set; }
+
+    public float CurrentRotation { get; set; }
+    public float InputAcceleration { get; set; }
+    public float InputSteering { get; set; }
+    public float InputBrake { get; set; }
+
 
     private PlayerInfo m_PlayerInfo;
 
@@ -33,9 +39,11 @@ public class PlayerController : NetworkBehaviour
     private float m_SteerHelper = 0.8f;
 
 
-    private float m_CurrentSpeed = 0;
+    // private float m_CurrentSpeed = 0;
+    public float m_CurrentSpeed = 0;
 
-    private float Speed
+    // private float Speed
+    public float Speed
     {
         get { return m_CurrentSpeed; }
         set

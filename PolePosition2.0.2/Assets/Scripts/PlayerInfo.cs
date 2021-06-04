@@ -11,13 +11,15 @@ public class PlayerInfo : MonoBehaviour
     [SerializeField] public GameObject check3;
     [SerializeField] public GameObject check4;
 
+    public float distanciaArco;
+
     [SerializeField] private int numCheckPoint;
     [SerializeField] private bool chocado;
     private Vector3[] posicionesChecks = new Vector3[4];
     private Vector3[] posicionesLookAt = new Vector3[4];
 
    
-    [SerializeField]private int vueltas = 0;
+    [SerializeField]public int vueltas = 0;
 
 
     [SerializeField] public bool sentidoContrario = false;
