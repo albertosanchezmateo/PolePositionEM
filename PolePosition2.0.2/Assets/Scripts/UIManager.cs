@@ -40,6 +40,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject menuCancelar;
     [SerializeField] private Button buttonCancelarReady;
 
+    [Header("Materiales")]
+    [SerializeField] private Material material1;
+
+
     private void Awake()
     {
         m_NetworkManager = FindObjectOfType<MyNetworkManager>();
@@ -76,7 +80,7 @@ public class UIManager : MonoBehaviour
         menuSeleccionNombre.SetActive(false);
     }
 
-    private void ActivateInGameHUD()
+    public void ActivateInGameHUD()
     {
         mainMenu.SetActive(false);
         inGameHUD.SetActive(true);

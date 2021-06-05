@@ -616,7 +616,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &303023554
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1004,6 +1004,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559890646}
   m_CullTransparentMesh: 0
+--- !u!114 &634007295 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6415909392756466390, guid: 5c339809502a33749b546f6663bcfb75,
+    type: 3}
+  m_PrefabInstance: {fileID: 6415909393553272841}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &725579033
 GameObject:
   m_ObjectHideFlags: 0
@@ -1365,7 +1377,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1049895873
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2016,7 +2028,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  numPlayers: 0
+  numPlayers: 1
+  rankingBox: {fileID: 634007295}
 --- !u!4 &1839589614
 Transform:
   m_ObjectHideFlags: 0
@@ -2925,6 +2938,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6415909392756466390, guid: 5c339809502a33749b546f6663bcfb75,
+        type: 3}
+      propertyPath: m_FontData.m_VerticalOverflow
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6415909392756466390, guid: 5c339809502a33749b546f6663bcfb75,
+        type: 3}
+      propertyPath: m_FontData.m_HorizontalOverflow
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6415909394017212768, guid: 5c339809502a33749b546f6663bcfb75,
         type: 3}
       propertyPath: color1
@@ -3049,6 +3072,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6415909394322138283, guid: 5c339809502a33749b546f6663bcfb75,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6415909394493063714, guid: 5c339809502a33749b546f6663bcfb75,
         type: 3}

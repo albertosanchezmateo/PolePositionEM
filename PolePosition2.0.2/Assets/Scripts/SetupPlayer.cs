@@ -13,12 +13,13 @@ public class SetupPlayer : NetworkBehaviour
     [SyncVar] private int _id;
     [SyncVar(hook = nameof(HandleDisplayNameUpdated))][SerializeField] private string _name;
     [SyncVar(hook = nameof(HandleDisplayColor))][SerializeField] private Color _colorCoche;
-
+    
     private UIManager _uiManager;
     private MyNetworkManager _networkManager;
     private PlayerController _playerController;
     private PlayerInfo _playerInfo;
     private PolePositionManager _polePositionManager;
+    [SyncVar] [SerializeField]private int numJugadoresPartida;
 
     private GameObject[] listaJugadores;
     [SyncVar] public bool _ready;
@@ -78,7 +79,6 @@ public class SetupPlayer : NetworkBehaviour
         /*if (isServer)
         {
             //listaJugadores = GameObject.FindGameObjectsWithTag("Player");
-            Debug.Log(listaJugadores.Length);
         }*/
 
         if (isLocalPlayer)
@@ -102,19 +102,20 @@ public class SetupPlayer : NetworkBehaviour
                 {
                     checkReady = false;
                 }
-                Debug.Log("NUM JUGADIRES:" + checkReady);
                 //if (checkReady && listaJugadores.Length >= 4)
                 
             }
         }
 
-        if (checkReady && listaJugadores.Length >= 4)
+        if (checkReady && listaJugadores.Length >= numJugadoresPartida)
         {
             _playerController.enabled = true;
             _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
+            GameObject ui = GameObject.Find("UIManager");
+            ui.GetComponent<UIManager>().ActivateInGameHUD();
         }
 
-        if (_playerInfo.vueltas == maxVueltas)
+        if (_playerInfo.vueltas > 1)
         {
             
             _playerController.enabled = false;
@@ -123,6 +124,7 @@ public class SetupPlayer : NetworkBehaviour
             _playerController.InputAcceleration = 0;
             _playerController.InputSteering = 0;
             _playerController.InputBrake = 0;
+            _playerController.topSpeed = 0;
         }
     }
 
@@ -151,9 +153,7 @@ public class SetupPlayer : NetworkBehaviour
 
         if(!comprobacion){
             _name = newName;
-            Debug.Log("He conseguido cambiar de nombre");
         }else{
-            Debug.Log("No he conseguido cambiar de nombre");
         }
 
         
@@ -181,7 +181,8 @@ public class SetupPlayer : NetworkBehaviour
     }
 
     private void HandleDisplayColor(Color oldColor, Color newColor){
-
+        Renderer aux2 = GetComponentInChildren<Renderer>();
+                    aux2.materials[1].color = _colorCoche;
     }
     
     [Command]

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Mirror;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PolePositionManager : NetworkBehaviour
 {
@@ -13,6 +13,12 @@ public class PolePositionManager : NetworkBehaviour
     private readonly List<PlayerInfo> _players = new List<PlayerInfo>(4);
     private CircuitController _circuitController;
     private GameObject[] _debuggingSpheres;
+    [SyncVar(hook = nameof(HandleDisplayRanking))] string ordenRanking = "";
+
+
+    [SerializeField]public Text rankingBox;
+
+
 
     private void Awake()
     {
@@ -29,10 +35,13 @@ public class PolePositionManager : NetworkBehaviour
 
     private void Update()
     {
-        if (_players.Count == 0)
-            return;
-
-        UpdateRaceProgress();
+        if (_players.Count == 0){
+            return; 
+        }
+           
+   
+        CmdSetRanking();
+        
     }
 
     public void AddPlayer(PlayerInfo player)
@@ -57,16 +66,16 @@ public class PolePositionManager : NetworkBehaviour
         }
     }
 
-    public void UpdateRaceProgress()
+    public string UpdateRaceProgress()
     {
-        // Update car arc-lengths
+
+// Update car arc-lengths
         float[] arcLengths = new float[_players.Count];
 
         for (int i = 0; i < _players.Count; ++i)
         {
             arcLengths[i] = ComputeCarArcLength(i);
             _players[i].distanciaArco = arcLengths[i];
-            Debug.Log("[ORDEN CARRERA] Player " + i + ": " + arcLengths[i]);
         }
 
         int size = _players.Count;
@@ -74,7 +83,7 @@ public class PolePositionManager : NetworkBehaviour
 
 
 
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size;  i++)
         {
             playerInfos[i] = _players[i];
         }
@@ -90,18 +99,23 @@ public class PolePositionManager : NetworkBehaviour
         }
 
 
-
         _players.Reverse();
+        Debug.Log(_players.ToString());
+
+        
 
         // _players.Sort(new PlayerInfoComparer(arcLengths));
 
         string myRaceOrder = "";
+        int posActual = 1;
         foreach (var player in _players)
         {
-            myRaceOrder += player.Name + " ";
+            myRaceOrder += posActual +". " + player.GetComponent<SetupPlayer>().getName() + "\r"; //Cambiar nombre y número añadir br
+            posActual++;
         }
-
-        Debug.Log("El orden de carrera es: " + myRaceOrder);
+          //  Debug.Log(myRaceOrder);
+            return myRaceOrder;
+       
     }
 
     float ComputeCarArcLength(int id)
@@ -135,11 +149,33 @@ public class PolePositionManager : NetworkBehaviour
 
             minArcL += _players[id].vueltas * 10000;
 
-            Debug.Log("[COMPUTE] Player " + id + " (minArcL): " + minArcL);
 
             return minArcL;
         }
 
         return 0;
     }
+
+    #region updateRanking
+
+    [Server]
+    public void UpdateRanking(){
+        Debug.Log("Hola");
+        ordenRanking = UpdateRaceProgress();
+        Debug.Log(UpdateRaceProgress());
+    }
+
+
+    private void HandleDisplayRanking(string oldDisplayOrder, string newDisplayOrder){
+        rankingBox.text = ordenRanking;
+    }
+
+    
+    public void CmdSetRanking(){
+        Debug.Log("CMdActivado");
+        UpdateRanking();
+    }
+
+#endregion
 }
+
