@@ -162,7 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  clientAuthority: 1
+  clientAuthority: 0
   localPositionSensitivity: 0
   localRotationSensitivity: 0.01
   localScaleSensitivity: 0.01
@@ -185,6 +185,7 @@ MonoBehaviour:
   syncInterval: 0.1
   _name: 
   _colorCoche: {r: 0, g: 0, b: 0, a: 0}
+  _ready: 0
 --- !u!114 &3466774584401487325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +202,7 @@ MonoBehaviour:
   check2: {fileID: 0}
   check3: {fileID: 0}
   check4: {fileID: 0}
+  distanciaArco: 0
   numCheckPoint: 0
   chocado: 0
   vueltas: 0
@@ -238,6 +240,7 @@ MonoBehaviour:
   topSpeed: 200
   downForce: 1000
   slipLimit: 0.2
+  m_CurrentSpeed: 0
 --- !u!114 &6346869062069434778
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -26,6 +26,10 @@ public class SetupPlayer : NetworkBehaviour
 
     private int maxVueltas = 2;
 
+    private InputController _input;
+    private Vector2 _movement;
+    private readonly float _movementSpeed = 0.1f;
+
     #region Start & Stop Callbacks
 
     /// <summary>
@@ -69,54 +73,69 @@ public class SetupPlayer : NetworkBehaviour
         _networkManager = FindObjectOfType<MyNetworkManager>();
         _polePositionManager = FindObjectOfType<PolePositionManager>();
         _uiManager = FindObjectOfType<UIManager>();
+        _input = new InputController();
+    }
+
+    // Control del InputController
+    private void OnEnable()
+    {
+        _input.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _input.Disable();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-
-        /*if (isServer)
+   
+        if (isServer)
         {
-            //listaJugadores = GameObject.FindGameObjectsWithTag("Player");
-            Debug.Log(listaJugadores.Length);
-        }*/
+            // listaJugadores = GameObject.FindGameObjectsWithTag("Player");
+            // Debug.Log(listaJugadores.Length);
+        }
 
         if (isLocalPlayer)
         {
-            //listaJugadores = GameObject.FindGameObjectsWithTag("Player");
-            //_playerController.enabled = true;
-            //_playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
+            // listaJugadores = GameObject.FindGameObjectsWithTag("Player");
+            // _playerController.enabled = true;
+            // _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
             ConfigureCamera();
         }
     }
 
     private void Update()
     {
+        // Control de la entrada de jugadores a la carrera
         if (isLocalPlayer)
         {
             listaJugadores = GameObject.FindGameObjectsWithTag("Player");
             checkReady = true;
+
             foreach (GameObject player in listaJugadores)
             {
                 if (!player.GetComponent<SetupPlayer>()._ready)
                 {
                     checkReady = false;
-                }
-                Debug.Log("NUM JUGADIRES:" + checkReady);
-                //if (checkReady && listaJugadores.Length >= 4)
-                
+                }  
             }
         }
 
+        // Control sincronizado del inicio de la carrera
         if (checkReady && listaJugadores.Length >= 4)
         {
             _playerController.enabled = true;
             _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
         }
 
+        // Control del InputController
+        _movement = _input.Player.Movement.ReadValue<Vector2>();
+
+        // Control de la finalización de la carrera
         if (_playerInfo.vueltas == maxVueltas)
-        {
-            
+        {   
             _playerController.enabled = false;
             _playerController.Speed = 0;
             _playerController.CurrentRotation = 0;
@@ -124,6 +143,12 @@ public class SetupPlayer : NetworkBehaviour
             _playerController.InputSteering = 0;
             _playerController.InputBrake = 0;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        // Cálculo de físicas del movimiento con el InputController
+        transform.Translate(new Vector3(_movement.x, _movement.y, 0) * _movementSpeed);
     }
 
     void OnSpeedChangeEventHandler(float speed)
@@ -139,20 +164,27 @@ public class SetupPlayer : NetworkBehaviour
 
     #region Name
     [Server]
-    public void SetName(string newName){
-        //Compueba aqui que el nombre no es igual
+
+    // Comprobación del nombre de los juagdores
+    public void SetName(string newName)
+    {
         bool comprobacion = false;
         SetupPlayer[] players = (SetupPlayer[]) GameObject.FindObjectsOfType (typeof(SetupPlayer));
-        foreach(SetupPlayer player in players){
-            if(player.getName()== newName){
+
+        foreach(SetupPlayer player in players)
+        {
+            if(player.getName()== newName)
+            {
                 comprobacion = true;
             }
         }
 
-        if(!comprobacion){
+        if(!comprobacion)
+        {
             _name = newName;
             Debug.Log("He conseguido cambiar de nombre");
-        }else{
+
+        } else {
             Debug.Log("No he conseguido cambiar de nombre");
         }
 
@@ -160,7 +192,8 @@ public class SetupPlayer : NetworkBehaviour
     }
 
 
-    private void HandleDisplayNameUpdated(string oldDisplayName, string newDisplayName){
+    private void HandleDisplayNameUpdated(string oldDisplayName, string newDisplayName)
+    {
         
     }
 
@@ -171,6 +204,11 @@ public class SetupPlayer : NetworkBehaviour
 
     public string getName(){
         return _name;
+    }
+
+    void CmdCalculateMovement(Vector2 vector)
+    {
+        _movement = vector;
     }
     #endregion
 
