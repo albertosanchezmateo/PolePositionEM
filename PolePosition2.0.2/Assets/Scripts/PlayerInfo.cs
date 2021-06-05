@@ -128,11 +128,15 @@ public class PlayerInfo : MonoBehaviour
             chocado = true;
         }
 
-        if (chocado)
-        {
+        if (chocado) {
+            
+       
             this.GetComponent<Transform>().position = posicionesChecks[numCheckPoint-1];
             this.GetComponent<Transform>().LookAt(posicionesLookAt[numCheckPoint-1]);
             chocado = false;
+            this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+            this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+
         }
         
     }

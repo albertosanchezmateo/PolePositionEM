@@ -117,14 +117,15 @@ public class SetupPlayer : NetworkBehaviour
 
         if (_playerInfo.vueltas > 1)
         {
-            
+            this.GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+
             _playerController.enabled = false;
             _playerController.Speed = 0;
             _playerController.CurrentRotation = 0;
             _playerController.InputAcceleration = 0;
             _playerController.InputSteering = 0;
             _playerController.InputBrake = 0;
-            _playerController.topSpeed = 0;
+    
         }
     }
 
