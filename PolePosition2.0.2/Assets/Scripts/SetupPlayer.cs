@@ -22,7 +22,7 @@ public class SetupPlayer : NetworkBehaviour
 
     private GameObject[] listaJugadores;
     [SyncVar] public bool _ready;
-    private bool checkReady = true;
+    private bool checkReady = false;
 
     private int maxVueltas = 2;
 
@@ -75,14 +75,15 @@ public class SetupPlayer : NetworkBehaviour
     void Start()
     {
 
-        if (isServer)
+        /*if (isServer)
         {
-            listaJugadores = GameObject.FindGameObjectsWithTag("Player");
+            //listaJugadores = GameObject.FindGameObjectsWithTag("Player");
             Debug.Log(listaJugadores.Length);
-        }
+        }*/
 
         if (isLocalPlayer)
         {
+            //listaJugadores = GameObject.FindGameObjectsWithTag("Player");
             //_playerController.enabled = true;
             //_playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
             ConfigureCamera();
@@ -91,8 +92,9 @@ public class SetupPlayer : NetworkBehaviour
 
     private void Update()
     {
-        if (isServer)
+        if (isLocalPlayer)
         {
+            listaJugadores = GameObject.FindGameObjectsWithTag("Player");
             checkReady = true;
             foreach (GameObject player in listaJugadores)
             {
@@ -100,13 +102,16 @@ public class SetupPlayer : NetworkBehaviour
                 {
                     checkReady = false;
                 }
-
-                if (checkReady)
-                {
-                    _playerController.enabled = true;
-                    _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
-                }
+                Debug.Log("NUM JUGADIRES:" + checkReady);
+                //if (checkReady && listaJugadores.Length >= 4)
+                
             }
+        }
+
+        if (checkReady && listaJugadores.Length >= 4)
+        {
+            _playerController.enabled = true;
+            _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
         }
 
         if (_playerInfo.vueltas == maxVueltas)
