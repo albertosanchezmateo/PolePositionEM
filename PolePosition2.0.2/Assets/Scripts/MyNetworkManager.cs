@@ -9,21 +9,27 @@ public class MyNetworkManager : NetworkManager
 
 
     #region Client
-        public override void OnClientConnect(NetworkConnection conn){
+
+    public override void OnClientConnect(NetworkConnection conn){
            base.OnClientConnect(conn);
 
             Debug.Log("Cliente conectado");
         }
 
-      /*  public override void AddPlayer(){
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+    }
 
-        }*/
+    /*  public override void AddPlayer(){
+
+      }*/
 
     #endregion
 
     #region Server
 
-        public override void OnServerConnect(NetworkConnection conn){
+    public override void OnServerConnect(NetworkConnection conn){
             Debug.Log("Nueva connección okay");
         }
         

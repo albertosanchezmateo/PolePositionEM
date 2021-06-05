@@ -86,7 +86,7 @@ public class SetupPlayer : NetworkBehaviour
             //listaJugadores = GameObject.FindGameObjectsWithTag("Player");
             //_playerController.enabled = true;
             //_playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
-            ConfigureCamera();
+            //ConfigureCamera();
         }
     }
 
@@ -113,9 +113,10 @@ public class SetupPlayer : NetworkBehaviour
             _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
             GameObject ui = GameObject.Find("UIManager");
             ui.GetComponent<UIManager>().ActivateInGameHUD();
+            ConfigureCamera();
         }
 
-        if (_playerInfo.vueltas > 1)
+        if (_playerInfo.vueltas >= 2)
         {
             this.GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
@@ -125,7 +126,9 @@ public class SetupPlayer : NetworkBehaviour
             _playerController.InputAcceleration = 0;
             _playerController.InputSteering = 0;
             _playerController.InputBrake = 0;
-    
+
+            restartCamera();
+
         }
     }
 
@@ -138,7 +141,23 @@ public class SetupPlayer : NetworkBehaviour
     {
         if (Camera.main != null) Camera.main.gameObject.GetComponent<CameraController>().m_Focus = this.gameObject;
     }
+    
+    void restartCamera()
+    {
+        Camera.main.gameObject.GetComponent<Transform>().position = Camera.main.gameObject.GetComponent<CameraController>().posInicial;
+        Camera.main.gameObject.GetComponent<Transform>().rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
+        
+        if (isServer) {
 
+            _networkManager.StopHost();
+
+        }
+        else
+        {
+            _networkManager.StopClient();
+        }
+        _uiManager.ActivateMainMenu();
+    }
 
     #region Name
     [Server]

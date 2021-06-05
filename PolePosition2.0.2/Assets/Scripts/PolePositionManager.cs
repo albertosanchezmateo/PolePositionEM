@@ -110,7 +110,7 @@ public class PolePositionManager : NetworkBehaviour
         int posActual = 1;
         foreach (var player in _players)
         {
-            myRaceOrder += posActual +". " + player.GetComponent<SetupPlayer>().getName() + "\r"; //Cambiar nombre y número añadir br
+            myRaceOrder += posActual +". " + player.GetComponent<SetupPlayer>().getName() + System.Environment.NewLine; //Cambiar nombre y número añadir br
             posActual++;
         }
           //  Debug.Log(myRaceOrder);

@@ -72,8 +72,9 @@ public class UIManager : MonoBehaviour
         textSpeed.text = "Speed " + speed + " Km/h";
     }
 
-    private void ActivateMainMenu()
+    public void ActivateMainMenu()
     {
+        
         mainMenu.SetActive(true);
         inGameHUD.SetActive(false);
         menuCancelar.SetActive(false);

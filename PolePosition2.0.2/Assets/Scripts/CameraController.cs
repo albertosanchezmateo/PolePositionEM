@@ -16,6 +16,7 @@ public class CameraController : MonoBehaviour
     private Vector3 m_Direction = Vector3.zero;
 
     private Camera mainCamera;
+    public Vector3 posInicial = new Vector3(0, 2.82f, -10f);
 
     // Start is called before the first frame update
     void Start()
