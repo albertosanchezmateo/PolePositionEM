@@ -15,6 +15,7 @@ public class SetupPlayer : NetworkBehaviour
     [SyncVar(hook = nameof(HandleDisplayNameUpdated))][SerializeField] private string _name;
     [SyncVar(hook = nameof(HandleDisplayColor))][SerializeField] private Color _colorCoche;
     [SyncVar(hook = nameof(HandleCurrentLap))][SerializeField] private int vueltas = 1;
+    [SyncVar(hook = nameof(HandleFinPartida))][SerializeField]private bool finPartida;
 
     private UIManager _uiManager;
     private MyNetworkManager _networkManager;
@@ -22,6 +23,8 @@ public class SetupPlayer : NetworkBehaviour
     private PlayerInfo _playerInfo;
     private PolePositionManager _polePositionManager;
     [SyncVar] [SerializeField]private int numJugadoresPartida;
+    private bool partidaEmpezada = false;
+    
 
     private GameObject[] listaJugadores;
     [SyncVar] public bool _ready;
@@ -73,7 +76,9 @@ public class SetupPlayer : NetworkBehaviour
         _networkManager = FindObjectOfType<MyNetworkManager>();
         _polePositionManager = FindObjectOfType<PolePositionManager>();
         _uiManager = FindObjectOfType<UIManager>();
-
+        partidaEmpezada = false;
+        _polePositionManager.resetTime();
+        _polePositionManager.flagAumentoTiempo = true;
        
     }
 
@@ -117,8 +122,12 @@ public class SetupPlayer : NetworkBehaviour
             _playerController.enabled = true;
             _playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
             GameObject ui = GameObject.Find("UIManager");
-            ui.GetComponent<UIManager>().ActivateInGameHUD();
-            ConfigureCamera();
+            if(!partidaEmpezada){
+                ui.GetComponent<UIManager>().ActivateInGameHUD();
+                ConfigureCamera();
+                partidaEmpezada = true;
+            }
+            
         }
 
         if (vueltas > maxVueltas)
@@ -131,8 +140,10 @@ public class SetupPlayer : NetworkBehaviour
             _playerController.InputAcceleration = 0;
             _playerController.InputSteering = 0;
             _playerController.InputBrake = 0;
+            
+            CmdFinPartida();
 
-            restartCamera();
+            //restartCamera();
 
         }
     }
@@ -147,11 +158,18 @@ public class SetupPlayer : NetworkBehaviour
         if (Camera.main != null) Camera.main.gameObject.GetComponent<CameraController>().m_Focus = this.gameObject;
     }
     
-    void restartCamera()
+    public void restartCamera()
     {
+        
         Camera.main.gameObject.GetComponent<Transform>().position = Camera.main.gameObject.GetComponent<CameraController>().posInicial;
         Camera.main.gameObject.GetComponent<Transform>().rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
+        disconectUser();
         
+        _polePositionManager.flagAumentoTiempo = false;
+        _uiManager.ActivateMainMenu();
+    }
+
+    public void disconectUser(){
         if (isServer) {
 
             _networkManager.StopHost();
@@ -162,7 +180,6 @@ public class SetupPlayer : NetworkBehaviour
         {
             _networkManager.StopClient();
         }
-        _uiManager.ActivateMainMenu();
     }
 
     #region Name
@@ -257,6 +274,30 @@ public class SetupPlayer : NetworkBehaviour
         return vueltas;
     }
     
+    #endregion
+
+    #region finPartida
+    [Server]
+    public void SetFinPartida(){
+        finPartida = true;
+        
+    }
+
+
+    private void HandleFinPartida(bool oldFinPartida, bool newFinPartida){
+        _polePositionManager.flagAumentoTiempo = false;
+
+
+        _uiManager.finalPartida(_polePositionManager.getTime());
+    }
+
+    [Command]
+    public void CmdFinPartida(){
+        SetFinPartida();
+    }
+
+    
+
     #endregion
 
 

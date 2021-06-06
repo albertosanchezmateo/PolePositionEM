@@ -9,6 +9,7 @@ public class PolePositionManager : NetworkBehaviour
 {
     public int numPlayers;
     private MyNetworkManager _networkManager;
+    public static double tiempo = 0;
 
     private readonly List<PlayerInfo> _players = new List<PlayerInfo>(4);
     private CircuitController _circuitController;
@@ -17,8 +18,19 @@ public class PolePositionManager : NetworkBehaviour
 
 
     [SerializeField]public Text rankingBox;
+    [SerializeField]public Text tiempoBox;
+    public bool flagAumentoTiempo;
+    
+    
 
 
+    public string getTime(){
+        return ("" +tiempo);
+    }
+
+    public void resetTime(){
+        tiempo = 0;
+    }
 
     private void Awake()
     {
@@ -31,8 +43,17 @@ public class PolePositionManager : NetworkBehaviour
             _debuggingSpheres[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             _debuggingSpheres[i].GetComponent<SphereCollider>().enabled = false;
         }
+        
     }
 
+    private void Update(){
+        if(flagAumentoTiempo){
+        tiempo += Time.deltaTime;
+        tiempoBox.text = ""+ Math.Round(tiempo, 3);
+        }
+        
+    }
+    
     private void FixedUpdate()
     {
         if (_players.Count == 0){
@@ -51,6 +72,17 @@ public class PolePositionManager : NetworkBehaviour
 
     public void ClearPlayer(){
         _players.Clear();
+    }
+
+    public void EliminatePlayerByName(string name){
+        foreach(PlayerInfo p in _players){
+            if(p.GetComponent<SetupPlayer>().getName() == name){
+                _players.Remove(p);
+                break;
+            }
+        }
+
+        Debug.Log(_players.ToString());
     }
 
     private class PlayerInfoComparer : Comparer<PlayerInfo>
@@ -164,7 +196,6 @@ public class PolePositionManager : NetworkBehaviour
 
     [Server]
     public void UpdateRanking(){
-        Debug.Log("Hola");
         ordenRanking = UpdateRaceProgress();
         Debug.Log(UpdateRaceProgress());
     }
@@ -176,8 +207,11 @@ public class PolePositionManager : NetworkBehaviour
 
     
     public void CmdSetRanking(){
-        Debug.Log("CMdActivado");
         UpdateRanking();
+    }
+
+    public string getRanking(){
+        return ordenRanking;
     }
 
 #endregion

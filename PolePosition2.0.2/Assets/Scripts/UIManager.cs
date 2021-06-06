@@ -11,6 +11,13 @@ public class UIManager : MonoBehaviour
 
     private MyNetworkManager m_NetworkManager;
 
+    [Header("Pantalla Final")]
+    [SerializeField] private GameObject menuFinal;
+    [SerializeField] private Text puestoFinal;
+    [SerializeField] private Text tiempoFinal;
+    [SerializeField] private Text vueltasFinal;
+    [SerializeField] private Button buttonSalirFinal;
+
     [Header("Main Menu")] [SerializeField] private GameObject mainMenu;
     [SerializeField] private Button buttonHost;
     [SerializeField] private Button buttonClient;
@@ -23,6 +30,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text textSpeed;
     [SerializeField] private Text textLaps;
     [SerializeField] private Text textPosition;
+    [SerializeField] private Button buttonSalir;
+    [SerializeField] private Text textTiempo;
 
     [Header("Selección De Nombre")] 
 
@@ -40,8 +49,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject menuCancelar;
     [SerializeField] private Button buttonCancelarReady;
 
-    [Header("Materiales")]
-    [SerializeField] private Material material1;
+    
+    
+
+ 
 
 
     private void Awake()
@@ -60,6 +71,8 @@ public class UIManager : MonoBehaviour
         buttoncolor3.onClick.AddListener(() => cambiarColor(3));
         buttoncolor4.onClick.AddListener(() => cambiarColor(4));
         buttonCancelarReady.onClick.AddListener(() => cancelarReady());
+        buttonSalir.onClick.AddListener(() => salirMenu());
+        buttonSalirFinal.onClick.AddListener(() => salirMenu());
         ActivateMainMenu();
 
         for(int i =0; i<buttonActivado.Length;i++){
@@ -79,6 +92,7 @@ public class UIManager : MonoBehaviour
         inGameHUD.SetActive(false);
         menuCancelar.SetActive(false);
         menuSeleccionNombre.SetActive(false);
+        menuFinal.SetActive(false);
     }
 
     public void ActivateInGameHUD()
@@ -87,6 +101,7 @@ public class UIManager : MonoBehaviour
         inGameHUD.SetActive(true);
         menuCancelar.SetActive(false);
         menuSeleccionNombre.SetActive(false);
+        menuFinal.SetActive(false);
     }
 
     private void ActivateSeleccionNombre()
@@ -95,6 +110,7 @@ public class UIManager : MonoBehaviour
         inGameHUD.SetActive(false);
         menuCancelar.SetActive(false);
         menuSeleccionNombre.SetActive(true);
+        menuFinal.SetActive(false);
     }
 
     private void ActivateCancelar()
@@ -103,6 +119,16 @@ public class UIManager : MonoBehaviour
         inGameHUD.SetActive(false);
         menuCancelar.SetActive(true);
         menuSeleccionNombre.SetActive(false);
+        menuFinal.SetActive(false);
+    }
+
+    private void ActivateMenuFinal()
+    {
+        mainMenu.SetActive(false);
+        inGameHUD.SetActive(false);
+        menuCancelar.SetActive(false);
+        menuSeleccionNombre.SetActive(false);
+        menuFinal.SetActive(true);
     }
 
 
@@ -204,5 +230,45 @@ public class UIManager : MonoBehaviour
             }
 
         
+    }
+
+    private void salirMenu(){
+        SetupPlayer[] players = (SetupPlayer[])GameObject.FindObjectsOfType(typeof(SetupPlayer));
+        foreach (SetupPlayer player in players)
+        {
+            if (player.hasAuthority)
+            {
+                player.restartCamera();
+
+                
+
+            }
+        }
+    }
+
+    public void finalPartida(string tiempo){
+        ActivateMenuFinal();
+
+        SetupPlayer[] players = (SetupPlayer[]) GameObject.FindObjectsOfType (typeof(SetupPlayer));
+        foreach(SetupPlayer player in players){
+                if(player.hasAuthority){
+
+                    string[] strings = GameObject.Find("@PolePositionManager").GetComponent<PolePositionManager>().getRanking().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+                    foreach(string puesto in strings){
+                        if(puesto.Contains(player.getName())){
+                            puestoFinal.text = "" + puesto[0] ;
+                        }
+                    }
+                   
+                   tiempoFinal.text = tiempo;
+                    vueltasFinal.text = "" + (player.getCurrentLap()-1);
+                    
+                }
+            }
+
+        
+
+
     }
 }

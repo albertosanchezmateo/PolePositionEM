@@ -17,25 +17,31 @@ public class MyNetworkManager : NetworkManager
         }
 
     public override void OnStopClient()
-    {
+    {   Camera.main.gameObject.GetComponent<Transform>().position = Camera.main.gameObject.GetComponent<CameraController>().posInicial;
+        Camera.main.gameObject.GetComponent<Transform>().rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
+        
         base.OnStopClient();
+        
         Debug.Log("StopClient");
         GameObject.Find("UIManager").GetComponent<UIManager>().ActivateMainMenu();
 
 
-        Camera.main.gameObject.GetComponent<Transform>().position = Camera.main.gameObject.GetComponent<CameraController>().posInicial;
-        Camera.main.gameObject.GetComponent<Transform>().rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
         
     }
 
     public override void OnStopServer(){
         base.OnStopServer();
-        Debug.Log("StopServer");
+        
+        Camera.main.gameObject.GetComponent<Transform>().position = Camera.main.gameObject.GetComponent<CameraController>().posInicial;
+        Camera.main.gameObject.GetComponent<Transform>().rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
 
     }
 
     public override void OnServerDisconnect(NetworkConnection conn){
-        Debug.Log("ServerDisconnect");
+        Debug.Log(conn.identity.GetComponent<SetupPlayer>().getName());
+        GameObject.Find("@PolePositionManager").GetComponent<PolePositionManager>().EliminatePlayerByName(conn.identity.GetComponent<SetupPlayer>().getName());
+        base.OnServerDisconnect(conn);
+
     }
 
     /*  public override void AddPlayer(){
@@ -54,6 +60,11 @@ public class MyNetworkManager : NetworkManager
         private void AddPlayerToList(SetupPlayer info)
         {
         listaInfoJugadores.Add(info);
+        }
+        public override void OnClientDisconnect(NetworkConnection conn)
+        {
+            base.OnClientDisconnect(conn);
+            
         }
 
     #endregion

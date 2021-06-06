@@ -186,9 +186,10 @@ MonoBehaviour:
   _name: 
   _colorCoche: {r: 0, g: 0, b: 0, a: 0}
   vueltas: 1
+  finPartida: 0
   numJugadoresPartida: 2
   _ready: 0
-  maxVueltas: 3
+  maxVueltas: 1
 --- !u!114 &3466774584401487325
 MonoBehaviour:
   m_ObjectHideFlags: 0
