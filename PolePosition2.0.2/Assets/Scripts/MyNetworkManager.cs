@@ -12,10 +12,9 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnClientConnect(NetworkConnection conn){
            base.OnClientConnect(conn);
-
-            Debug.Log("Cliente conectado");
         }
 
+    // Al parar o desconectar un cliente se establece de nuevo el menú principal.
     public override void OnStopClient()
     {   Camera.main.gameObject.GetComponent<Transform>().position = Camera.main.gameObject.GetComponent<CameraController>().posInicial;
         Camera.main.gameObject.GetComponent<Transform>().rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
@@ -29,6 +28,7 @@ public class MyNetworkManager : NetworkManager
         
     }
 
+    // Al parar o desconectar el servidor se reestablece la cámara.
     public override void OnStopServer(){
         base.OnStopServer();
         
@@ -37,24 +37,19 @@ public class MyNetworkManager : NetworkManager
 
     }
 
+    // Al desconectar un cliente que no sea el host se actualiza el ranking de la partida.
     public override void OnServerDisconnect(NetworkConnection conn){
         Debug.Log(conn.identity.GetComponent<SetupPlayer>().getName());
         GameObject.Find("@PolePositionManager").GetComponent<PolePositionManager>().EliminatePlayerByName(conn.identity.GetComponent<SetupPlayer>().getName());
         base.OnServerDisconnect(conn);
 
     }
-
-    /*  public override void AddPlayer(){
-
-      }*/
-
     #endregion
 
     #region Server
 
     public override void OnServerConnect(NetworkConnection conn){
-            Debug.Log("Nueva connección okay");
-        }
+    }
         
         [Server]
         private void AddPlayerToList(SetupPlayer info)

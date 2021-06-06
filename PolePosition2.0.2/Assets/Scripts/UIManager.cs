@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    // Se establecen todas las secciones que vamos a ver en el inspector con todas sus variables, según las interfaces a crear, para facililtar su uso posteriormente.
     public bool showGUI = true;
 
     private MyNetworkManager m_NetworkManager;
@@ -49,17 +50,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject menuCancelar;
     [SerializeField] private Button buttonCancelarReady;
 
-    
-    
-
- 
-
-
     private void Awake()
     {
         m_NetworkManager = FindObjectOfType<MyNetworkManager>();
     }
 
+    // Se les da funcionalidad con delegados a los diferentes botones.
     private void Start()
     {
         buttonHost.onClick.AddListener(() => StartHost());
@@ -85,6 +81,7 @@ public class UIManager : MonoBehaviour
         textSpeed.text = "Speed " + speed + " Km/h";
     }
 
+    // Cada uno de los Activate decide que interfaz se va a ver y cuál no.
     public void ActivateMainMenu()
     {
         
@@ -151,6 +148,7 @@ public class UIManager : MonoBehaviour
         ActivateInGameHUD();
     }
 
+    // Se comprueba que no pueda haber más nombres iguales y que el input no esté vacío.
     private void comprobarNombre(){
         if(inputFieldNombreJugador.text != ""){
             SetupPlayer[] players = (SetupPlayer[]) GameObject.FindObjectsOfType (typeof(SetupPlayer));
@@ -164,6 +162,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // Cambia el color del coche.
     private void cambiarColor(int color){
         if(buttonActivado[color-1]){
             Color colorNuevo = new Color(0f,0f,0f);
@@ -192,6 +191,7 @@ public class UIManager : MonoBehaviour
       
     }
 
+    // Sirve para poder sincronizar cuando un jugador decide cambiar algunos de los ajustes de personalización.
     private void cancelarReady()
     {
         SetupPlayer[] players = (SetupPlayer[])GameObject.FindObjectsOfType(typeof(SetupPlayer));
@@ -207,6 +207,7 @@ public class UIManager : MonoBehaviour
         ActivateSeleccionNombre();
     }
 
+    // Permite verificar los cambios realizados en los ajustes de personalización.
     private void entrarReady()
     {
         SetupPlayer[] players = (SetupPlayer[])GameObject.FindObjectsOfType(typeof(SetupPlayer));
@@ -220,6 +221,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // Declara las nuevas vueltas para el HUD.
     public void setNewLaps(int maxVueltas){
         SetupPlayer[] players = (SetupPlayer[]) GameObject.FindObjectsOfType (typeof(SetupPlayer));
         foreach(SetupPlayer player in players){
@@ -232,6 +234,7 @@ public class UIManager : MonoBehaviour
         
     }
 
+    // Permite volver a la interfaz del menú principal.
     private void salirMenu(){
         SetupPlayer[] players = (SetupPlayer[])GameObject.FindObjectsOfType(typeof(SetupPlayer));
         foreach (SetupPlayer player in players)
@@ -246,6 +249,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // Muestra la interfaz que se encarga de dar los resultados finales de la partida.
     public void finalPartida(string tiempo){
         ActivateMenuFinal();
 

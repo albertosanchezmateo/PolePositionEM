@@ -6,29 +6,24 @@ using UnityEngine;
 public class PlayerInfo : MonoBehaviour
 {
 
+    // Se declaran todas las variables necesarias para el control del recorrido del jugador, ya sea colisiones o control de chequeos.
     [SerializeField] public GameObject check1;
     [SerializeField] public GameObject check2; 
     [SerializeField] public GameObject check3;
     [SerializeField] public GameObject check4;
     private bool flagPrimeraVuelta = false;
     private bool flagVuelta = false;
-
     public float distanciaArco;
-
     [SerializeField] private int numCheckPoint;
     [SerializeField] private bool chocado;
     private Vector3[] posicionesChecks = new Vector3[4];
     private Vector3[] posicionesLookAt = new Vector3[4];
-
-   
-    
-
-
     [SerializeField] public bool sentidoContrario = false;
-    [SerializeField]private int numCheckRetrocesoSig; //Es la distancia con el checkPoint siguiente sin tener encuenta el numCheckPoint Actual
+    [SerializeField]private int numCheckRetrocesoSig; 
     [SerializeField]private float distanciaRetroceso;
 
 
+    // Dentro del Awake se van a inicializar las posiciones de los checkpoints además de las orientaciones para los spawns.
     private void Awake()
     {
         check1 = GameObject.Find("CheckPoint1");
@@ -54,17 +49,19 @@ public class PlayerInfo : MonoBehaviour
         chocado = false;
     }
 
+    // Se vuelve a escoger el FixerUpdate para realizar todas las comprobaciones y cambios necesarios para el recorrido.
     private void FixedUpdate()
     {
         Vector3 jugador = this.GetComponent<Transform>().position;
-
-       
 
         float distancia1 = Vector3.Distance(posicionesChecks[0], jugador);
         float distancia2 = Vector3.Distance(posicionesChecks[1], jugador);
         float distancia3 = Vector3.Distance(posicionesChecks[2], jugador);
         float distancia4 = Vector3.Distance(posicionesChecks[3], jugador);
         
+        // Por cada uno de los puntos de chequeo se va comprobando la distancia entre el jugador y se actualizan los parámetros del jugador en función a él.
+        // El flag va a ser necesario para poder activar la vuelta una vez se haya pasado hacia el checkpoint 2, porque al estar en posiciones distintas, solo uno lo activaba.
+
         if (distancia1 <= 10){
             numCheckRetrocesoSig = 2;
             distanciaRetroceso = 10000000;
@@ -116,8 +113,6 @@ public class PlayerInfo : MonoBehaviour
                
             }  
         }
-
-        Debug.Log("[NumCheckRetrocesoSig]: " + (numCheckRetrocesoSig));
         if(distanciaRetroceso>Vector3.Distance(posicionesChecks[numCheckRetrocesoSig-1], jugador)){
             sentidoContrario = false;
         }else{
@@ -127,7 +122,7 @@ public class PlayerInfo : MonoBehaviour
         distanciaRetroceso = Vector3.Distance(posicionesChecks[numCheckRetrocesoSig-1], jugador);
         
        
-
+        // Se comprueban las colisiones y se realiza el spawn.
         if (((Mathf.Abs(this.GetComponent<Transform>().localEulerAngles.z)>90)&&Mathf.Abs(this.GetComponent<Transform>().localEulerAngles.z)<280) ||((Mathf.Abs(this.GetComponent<Transform>().localEulerAngles.x)>90)&&Mathf.Abs(this.GetComponent<Transform>().localEulerAngles.x)<280))
         {
             chocado = true;

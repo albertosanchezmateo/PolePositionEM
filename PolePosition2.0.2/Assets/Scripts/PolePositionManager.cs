@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class PolePositionManager : NetworkBehaviour
 {
+    // Variables principales de PolePosition
     public int numPlayers;
     private MyNetworkManager _networkManager;
     public static double tiempo = 0;
@@ -16,18 +17,17 @@ public class PolePositionManager : NetworkBehaviour
     private GameObject[] _debuggingSpheres;
     [SyncVar(hook = nameof(HandleDisplayRanking))] string ordenRanking = "";
 
-
+    // Estas variables nos servirán para controlar el HUD
     [SerializeField]public Text rankingBox;
     [SerializeField]public Text tiempoBox;
     public bool flagAumentoTiempo;
-    
-    
 
-
+    // A través de este método conseguimos el tiempo que está calculando.
     public string getTime(){
         return ("" +tiempo);
     }
 
+    // Se inicializa a 0 el tiempo para la próxima conexión.
     public void resetTime(){
         tiempo = 0;
     }
@@ -46,6 +46,7 @@ public class PolePositionManager : NetworkBehaviour
         
     }
 
+    // Creamos un Update para poder controlar la suma del tiempo según va avanzando la carrera.
     private void Update(){
         if(flagAumentoTiempo){
         tiempo += Time.deltaTime;
@@ -53,14 +54,14 @@ public class PolePositionManager : NetworkBehaviour
         }
         
     }
-    
+
+
+    // Dentro del FixedUpdate, ya que realiza comprobaciones más rápidas, iremos actualizando el ranking del HUD
     private void FixedUpdate()
     {
         if (_players.Count == 0){
             return; 
         }
-           
-   
         CmdSetRanking();
         
     }
@@ -70,10 +71,12 @@ public class PolePositionManager : NetworkBehaviour
         _players.Add(player);
     }
 
+    // Se va a limpiar la lista de jugadores para preparar una nueva partida.
     public void ClearPlayer(){
         _players.Clear();
     }
 
+    // Elimina un jugador usando su nombre de la lista.
     public void EliminatePlayerByName(string name){
         foreach(PlayerInfo p in _players){
             if(p.GetComponent<SetupPlayer>().getName() == name){
@@ -81,8 +84,6 @@ public class PolePositionManager : NetworkBehaviour
                 break;
             }
         }
-
-        Debug.Log(_players.ToString());
     }
 
     private class PlayerInfoComparer : Comparer<PlayerInfo>
@@ -102,6 +103,7 @@ public class PolePositionManager : NetworkBehaviour
         }
     }
 
+    // Se va actualizando las posiciones de los jugadores con respecto al recorrido.
     public string UpdateRaceProgress()
     {
 
@@ -118,7 +120,7 @@ public class PolePositionManager : NetworkBehaviour
         PlayerInfo[] playerInfos = new PlayerInfo[size];
 
 
-
+        // Se obtienen todos los jugadores.
         for (int i = 0; i < size;  i++)
         {
             playerInfos[i] = _players[i];
@@ -128,7 +130,7 @@ public class PolePositionManager : NetworkBehaviour
         Array.Sort(playerInfos, delegate (PlayerInfo x, PlayerInfo y) { return x.distanciaArco.CompareTo(y.distanciaArco); });
 
 
-
+        
         for (int i = 0; i < _players.Count; ++i)
         {
             _players[i] = playerInfos[i];
@@ -136,12 +138,8 @@ public class PolePositionManager : NetworkBehaviour
 
 
         _players.Reverse();
-        Debug.Log(_players.ToString());
 
-        
-
-        // _players.Sort(new PlayerInfoComparer(arcLengths));
-
+        // Se establece el string que va a servir como ranking para el HUD.
         string myRaceOrder = "";
         int posActual = 1;
         foreach (var player in _players)
@@ -149,7 +147,6 @@ public class PolePositionManager : NetworkBehaviour
             myRaceOrder += posActual +". " + player.GetComponent<SetupPlayer>().getName() + System.Environment.NewLine; //Cambiar nombre y número añadir br
             posActual++;
         }
-          //  Debug.Log(myRaceOrder);
             return myRaceOrder;
        
     }
@@ -181,8 +178,6 @@ public class PolePositionManager : NetworkBehaviour
                            (_players[id].CurrentLap - 1);
             }
 
-            // _players[id].setDistancia(minArcL);
-
             minArcL += _players[id].CurrentLap * 10000;
 
 
@@ -192,12 +187,12 @@ public class PolePositionManager : NetworkBehaviour
         return 0;
     }
 
+    // Estas son las funciones encargadas de que el ranking sea actualizado de forma síncrona entre los clientes.
     #region updateRanking
 
     [Server]
     public void UpdateRanking(){
         ordenRanking = UpdateRaceProgress();
-        Debug.Log(UpdateRaceProgress());
     }
 
 

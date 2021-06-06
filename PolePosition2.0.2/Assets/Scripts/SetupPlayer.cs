@@ -10,6 +10,8 @@ using Random = System.Random;
 
 public class SetupPlayer : NetworkBehaviour
 {
+
+    // Se declaran todas las variables y sus respectivos hooks, de tal manera que queden sincronizadas.
     [SyncVar] private int _id;
 
     [SyncVar(hook = nameof(HandleDisplayNameUpdated))][SerializeField] private string _name;
@@ -84,24 +86,14 @@ public class SetupPlayer : NetworkBehaviour
 
     // Start is called before the first frame update
     void Start()
-    { _uiManager.setNewLaps(maxVueltas);
+    {
+        _uiManager.setNewLaps(maxVueltas);
 
-        /*if (isServer)
-        {
-            //listaJugadores = GameObject.FindGameObjectsWithTag("Player");
-        }*/
-
-        if (isLocalPlayer)
-        {
-            //listaJugadores = GameObject.FindGameObjectsWithTag("Player");
-            //_playerController.enabled = true;
-            //_playerController.OnSpeedChangeEvent += OnSpeedChangeEventHandler;
-            //ConfigureCamera();
-        }
     }
 
     private void Update()
     {
+        // Se comprueba que todos los jugadores estén preparados para sincronizar el comienzo de partida.
         if (isLocalPlayer)
         {
             listaJugadores = GameObject.FindGameObjectsWithTag("Player");
@@ -112,11 +104,11 @@ public class SetupPlayer : NetworkBehaviour
                 {
                     checkReady = false;
                 }
-                //if (checkReady && listaJugadores.Length >= 4)
                 
             }
         }
 
+        // Se establece que vuelva el control a los jugadores y que comience la partida.
         if (checkReady && listaJugadores.Length >= numJugadoresPartida)
         {
             _playerController.enabled = true;
@@ -130,6 +122,7 @@ public class SetupPlayer : NetworkBehaviour
             
         }
 
+        // Se comprueba si algún jugador ha acabado la partida.
         if (vueltas > maxVueltas)
         {
             this.GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
@@ -158,6 +151,7 @@ public class SetupPlayer : NetworkBehaviour
         if (Camera.main != null) Camera.main.gameObject.GetComponent<CameraController>().m_Focus = this.gameObject;
     }
     
+    // Método para poder reestablecer la cámara a la situación del menú principal.
     public void restartCamera()
     {
         
@@ -169,6 +163,7 @@ public class SetupPlayer : NetworkBehaviour
         _uiManager.ActivateMainMenu();
     }
 
+    // Se distingue la conexión del servidor y del cliente.
     public void disconectUser(){
         if (isServer) {
 
@@ -181,6 +176,8 @@ public class SetupPlayer : NetworkBehaviour
             _networkManager.StopClient();
         }
     }
+
+    // Cada una de estas regiones se encargará de actualizar los valores oportunos de cada jugador de forma sincronizada.
 
     #region Name
     [Server]
