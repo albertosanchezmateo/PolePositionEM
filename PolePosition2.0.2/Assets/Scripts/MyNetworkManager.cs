@@ -19,6 +19,23 @@ public class MyNetworkManager : NetworkManager
     public override void OnStopClient()
     {
         base.OnStopClient();
+        Debug.Log("StopClient");
+        GameObject.Find("UIManager").GetComponent<UIManager>().ActivateMainMenu();
+
+
+        Camera.main.gameObject.GetComponent<Transform>().position = Camera.main.gameObject.GetComponent<CameraController>().posInicial;
+        Camera.main.gameObject.GetComponent<Transform>().rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
+        
+    }
+
+    public override void OnStopServer(){
+        base.OnStopServer();
+        Debug.Log("StopServer");
+
+    }
+
+    public override void OnServerDisconnect(NetworkConnection conn){
+        Debug.Log("ServerDisconnect");
     }
 
     /*  public override void AddPlayer(){

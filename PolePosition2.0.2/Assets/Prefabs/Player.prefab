@@ -185,8 +185,10 @@ MonoBehaviour:
   syncInterval: 0.1
   _name: 
   _colorCoche: {r: 0, g: 0, b: 0, a: 0}
-  numJugadoresPartida: 1
+  vueltas: 1
+  numJugadoresPartida: 2
   _ready: 0
+  maxVueltas: 3
 --- !u!114 &3466774584401487325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,7 +208,6 @@ MonoBehaviour:
   distanciaArco: 0
   numCheckPoint: 0
   chocado: 0
-  vueltas: 0
   sentidoContrario: 0
   numCheckRetrocesoSig: 0
   distanciaRetroceso: 0

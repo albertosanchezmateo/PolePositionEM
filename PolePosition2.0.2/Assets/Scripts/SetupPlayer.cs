@@ -11,9 +11,11 @@ using Random = System.Random;
 public class SetupPlayer : NetworkBehaviour
 {
     [SyncVar] private int _id;
+
     [SyncVar(hook = nameof(HandleDisplayNameUpdated))][SerializeField] private string _name;
     [SyncVar(hook = nameof(HandleDisplayColor))][SerializeField] private Color _colorCoche;
-    
+    [SyncVar(hook = nameof(HandleCurrentLap))][SerializeField] private int vueltas = 1;
+
     private UIManager _uiManager;
     private MyNetworkManager _networkManager;
     private PlayerController _playerController;
@@ -25,7 +27,8 @@ public class SetupPlayer : NetworkBehaviour
     [SyncVar] public bool _ready;
     private bool checkReady = false;
 
-    private int maxVueltas = 2;
+    public int maxVueltas = 3;
+    
 
     #region Start & Stop Callbacks
 
@@ -70,11 +73,13 @@ public class SetupPlayer : NetworkBehaviour
         _networkManager = FindObjectOfType<MyNetworkManager>();
         _polePositionManager = FindObjectOfType<PolePositionManager>();
         _uiManager = FindObjectOfType<UIManager>();
+
+       
     }
 
     // Start is called before the first frame update
     void Start()
-    {
+    { _uiManager.setNewLaps(maxVueltas);
 
         /*if (isServer)
         {
@@ -116,7 +121,7 @@ public class SetupPlayer : NetworkBehaviour
             ConfigureCamera();
         }
 
-        if (_playerInfo.vueltas >= 2)
+        if (vueltas > maxVueltas)
         {
             this.GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
@@ -150,6 +155,7 @@ public class SetupPlayer : NetworkBehaviour
         if (isServer) {
 
             _networkManager.StopHost();
+            _polePositionManager.ClearPlayer();
 
         }
         else
@@ -230,6 +236,28 @@ public class SetupPlayer : NetworkBehaviour
     }
     #endregion
 
+    #region Vueltas
+     [Server]
+    public void SetCurrentLap(int newVueltas){
+        vueltas = newVueltas;
+        
+    }
+
+
+    private void HandleCurrentLap(int oldVueltas, int newVueltas){
+        _uiManager.setNewLaps(maxVueltas);
+    }
+
+    [Command]
+    public void CmdSetCurrentLap(int newVueltas){
+        SetCurrentLap(newVueltas);
+    }
+
+    public int getCurrentLap(){
+        return vueltas;
+    }
+    
+    #endregion
 
 
 

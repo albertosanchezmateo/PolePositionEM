@@ -777,6 +777,7 @@ MonoBehaviour:
   m_Distance: 10
   m_Elevation: 8
   m_Following: 0.5
+  posInicial: {x: 0, y: 2.82, z: -10}
 --- !u!1 &393337671
 GameObject:
   m_ObjectHideFlags: 0
@@ -2028,7 +2029,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  numPlayers: 1
+  numPlayers: 2
   rankingBox: {fileID: 634007295}
 --- !u!4 &1839589614
 Transform:

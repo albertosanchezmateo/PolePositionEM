@@ -10,6 +10,8 @@ public class PlayerInfo : MonoBehaviour
     [SerializeField] public GameObject check2; 
     [SerializeField] public GameObject check3;
     [SerializeField] public GameObject check4;
+    private bool flagPrimeraVuelta = false;
+    private bool flagVuelta = false;
 
     public float distanciaArco;
 
@@ -19,7 +21,7 @@ public class PlayerInfo : MonoBehaviour
     private Vector3[] posicionesLookAt = new Vector3[4];
 
    
-    [SerializeField]public int vueltas = 0;
+    
 
 
     [SerializeField] public bool sentidoContrario = false;
@@ -47,12 +49,12 @@ public class PlayerInfo : MonoBehaviour
         posicionesLookAt[3] = GameObject.Find("LookAt4").transform.position;
 
 
-        numCheckPoint = 4;
+        numCheckPoint = 1;
         numCheckRetrocesoSig = 2;
         chocado = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Vector3 jugador = this.GetComponent<Transform>().position;
 
@@ -66,25 +68,28 @@ public class PlayerInfo : MonoBehaviour
         if (distancia1 <= 10){
             numCheckRetrocesoSig = 2;
             distanciaRetroceso = 10000000;
-            if(numCheckPoint !=4){
+            if(numCheckPoint !=4 && !flagPrimeraVuelta){
             }else{
                 numCheckPoint = 1;
-                if(!sentidoContrario){
-                    vueltas++;
+                if(!sentidoContrario && flagVuelta){
+                    this.gameObject.GetComponentInChildren<SetupPlayer>().CmdSetCurrentLap(this.gameObject.GetComponentInChildren<SetupPlayer>().getCurrentLap() + 1);
+                    flagVuelta = false;
                 }
                 
             }   
         }
 
         if (distancia2 <= 10)
-        {
+        {   
+          
             numCheckRetrocesoSig = 3;
             distanciaRetroceso = 10000000;
             if(numCheckPoint !=1){
           
             }else{
                 numCheckPoint = 2;
- 
+                flagPrimeraVuelta = true;
+                flagVuelta = true;
             }  
             
         }

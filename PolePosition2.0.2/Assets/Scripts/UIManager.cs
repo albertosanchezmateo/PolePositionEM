@@ -193,4 +193,16 @@ public class UIManager : MonoBehaviour
             }
         }
     }
+
+    public void setNewLaps(int maxVueltas){
+        SetupPlayer[] players = (SetupPlayer[]) GameObject.FindObjectsOfType (typeof(SetupPlayer));
+        foreach(SetupPlayer player in players){
+                if(player.hasAuthority){
+                   
+                    textLaps.text = player.getCurrentLap() + "/" + maxVueltas;
+                }
+            }
+
+        
+    }
 }

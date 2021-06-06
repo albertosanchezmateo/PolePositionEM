@@ -33,7 +33,7 @@ public class PolePositionManager : NetworkBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_players.Count == 0){
             return; 
@@ -47,6 +47,10 @@ public class PolePositionManager : NetworkBehaviour
     public void AddPlayer(PlayerInfo player)
     {
         _players.Add(player);
+    }
+
+    public void ClearPlayer(){
+        _players.Clear();
     }
 
     private class PlayerInfoComparer : Comparer<PlayerInfo>
@@ -147,7 +151,7 @@ public class PolePositionManager : NetworkBehaviour
 
             // _players[id].setDistancia(minArcL);
 
-            minArcL += _players[id].vueltas * 10000;
+            minArcL += _players[id].CurrentLap * 10000;
 
 
             return minArcL;
